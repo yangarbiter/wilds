@@ -26,6 +26,18 @@ model_defaults = {
         },
         'target_resolution': (224, 224),
     },
+    'vgg11': {
+        'model_kwargs':{
+            'pretrained':True,
+        },
+        'target_resolution': (224, 224),
+    },
+    'vgg16': {
+        'model_kwargs':{
+            'pretrained':True,
+        },
+        'target_resolution': (224, 224),
+    },
     'resnet18': {
         'model_kwargs':{
             'pretrained':True,

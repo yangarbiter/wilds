@@ -50,7 +50,7 @@ def main():
     parser.add_argument('--batch_size', type=int)
     parser.add_argument('--eval_loader', choices=['standard'], default='standard')
     parser.add_argument('--uniform_iid', type=parse_bool, const=True, nargs='?')
-    parser.add_argument("--sample-rate", type=float, default=0.001, metavar="SR",
+    parser.add_argument("--sample_rate", type=float, default=0.001, metavar="SR",
                         help="sample rate used for batch construction (default: 0.001)",)
 
     # Model
