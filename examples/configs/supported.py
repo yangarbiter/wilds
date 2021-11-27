@@ -29,7 +29,7 @@ models = ['resnet18_ms', 'resnet50', 'resnet34', 'resnet18', 'wideresnet50',
 algorithms = ['ERM', 'groupDRO', 'deepCORAL', 'IRM']
 
 # See optimizer.py
-optimizers = ['SGD', 'Adam', 'AdamW']
+optimizers = ['SGD', 'DPSGD', 'Adam', 'AdamW']
 
 # See scheduler.py
 schedulers = ['linear_schedule_with_warmup', 'cosine_schedule_with_warmup', 'ReduceLROnPlateau', 'StepLR', 'MultiStepLR']

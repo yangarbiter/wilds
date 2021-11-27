@@ -74,6 +74,10 @@ def run_epoch(algorithm, dataset, general_logger, epoch, config, train):
         general_logger.write('Epoch eval:\n')
         general_logger.write(results_str)
 
+    if hasattr(algorithm.optimizer, 'privacy_engine'):
+        epsilon, best_alpha = algorithm.optimizer.privacy_engine.get_privacy_spent(config.delta)
+        general_logger.write(f"(ε = {epsilon:.2f}, δ = {config.delta}) for α = {best_alpha}\n")
+
     return results, epoch_y_pred
 
 

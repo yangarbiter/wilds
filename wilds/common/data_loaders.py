@@ -3,8 +3,10 @@ import torch
 from torch.utils.data import DataLoader
 from torch.utils.data.sampler import WeightedRandomSampler, SubsetRandomSampler
 from wilds.common.utils import get_counts, split_into_groups
+from opacus.utils.uniform_sampler import UniformWithReplacementSampler
 
-def get_train_loader(loader, dataset, batch_size,
+
+def get_train_loader(loader, dataset, batch_size, uniform_iid=None, sample_rate=None,
         uniform_over_groups=None, grouper=None, distinct_groups=True, n_groups_per_batch=None, **loader_kwargs):
     """
     Constructs and returns the data loader for training.
@@ -34,6 +36,15 @@ def get_train_loader(loader, dataset, batch_size,
                 sampler=None,
                 collate_fn=dataset.collate,
                 batch_size=batch_size,
+                **loader_kwargs)
+        elif uniform_iid:
+            sampler = UniformWithReplacementSampler(num_samples=len(dataset), sample_rate=sample_rate)
+            return DataLoader(
+                dataset,
+                shuffle=False,
+                sampler=sample_rate,
+                collate_fn=dataset.collate,
+                batch_size=1,
                 **loader_kwargs)
         else:
             assert grouper is not None

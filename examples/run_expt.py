@@ -49,6 +49,9 @@ def main():
     parser.add_argument('--n_groups_per_batch', type=int)
     parser.add_argument('--batch_size', type=int)
     parser.add_argument('--eval_loader', choices=['standard'], default='standard')
+    parser.add_argument('--uniform_iid', type=parse_bool, const=True, nargs='?')
+    parser.add_argument("--sample-rate", type=float, default=0.001, metavar="SR",
+                        help="sample rate used for batch construction (default: 0.001)",)
 
     # Model
     parser.add_argument('--model', choices=supported.models)
@@ -85,6 +88,9 @@ def main():
     parser.add_argument('--weight_decay', type=float)
     parser.add_argument('--max_grad_norm', type=float)
     parser.add_argument('--optimizer_kwargs', nargs='*', action=ParseKwargs, default={})
+    parser.add_argument('--sigma', type=float, default=1.0)
+    parser.add_argument('--max_per_sample_grad_norm', type=float, default=1.0)
+    parser.add_argument('--delta', type=float, default=1e-5)
 
     # Scheduler
     parser.add_argument('--scheduler', choices=supported.schedulers)
@@ -195,6 +201,8 @@ def main():
                 loader=config.train_loader,
                 dataset=datasets[split]['dataset'],
                 batch_size=config.batch_size,
+                uniform_iid=config.uniform_iid,
+                sample_rate=config.sample_rate,
                 uniform_over_groups=config.uniform_over_groups,
                 grouper=train_grouper,
                 distinct_groups=config.distinct_groups,
