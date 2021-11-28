@@ -12,7 +12,7 @@ mkdir -p ./logs/${DATASET}
 python examples/run_expt.py \
   --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
   --log_dir ./logs/${DATASET}/erm \
-  --algorithm ERM 
+  --algorithm ERM
 
 #python examples/run_expt.py \
 #  --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \

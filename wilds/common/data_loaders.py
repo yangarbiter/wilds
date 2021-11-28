@@ -5,8 +5,10 @@ from torch.utils.data.sampler import WeightedRandomSampler, SubsetRandomSampler
 from wilds.common.utils import get_counts, split_into_groups
 from opacus.utils.uniform_sampler import UniformWithReplacementSampler
 
+from .weighted_uniform_sampler import WeightedUniformWithReplacementSampler
 
-def get_train_loader(loader, dataset, batch_size, uniform_iid=None, sample_rate=None,
+
+def get_train_loader(loader, dataset, batch_size, weighted_uniform_iid=None, uniform_iid=None, sample_rate=None,
         uniform_over_groups=None, grouper=None, distinct_groups=True, n_groups_per_batch=None, **loader_kwargs):
     """
     Constructs and returns the data loader for training.
@@ -29,7 +31,7 @@ def get_train_loader(loader, dataset, batch_size, uniform_iid=None, sample_rate=
         - data loader (DataLoader): Data loader.
     """
     if loader == 'standard':
-        if uniform_over_groups is None or not uniform_over_groups:
+        if uniform_over_groups is None:
             return DataLoader(
                 dataset,
                 shuffle=True, # Shuffle training dataset
@@ -37,16 +39,36 @@ def get_train_loader(loader, dataset, batch_size, uniform_iid=None, sample_rate=
                 collate_fn=dataset.collate,
                 batch_size=batch_size,
                 **loader_kwargs)
+
+        elif weighted_uniform_iid:
+            assert grouper is not None
+            groups, group_counts = grouper.metadata_to_group(
+                dataset.metadata_array,
+                return_counts=True)
+            group_weights = 1 / group_counts
+            weights = group_weights[groups]
+            weights = weights / weights.sum() * len(dataset)
+
+            sampler = WeightedUniformWithReplacementSampler(weights, num_samples=len(dataset), sample_rate=sample_rate)
+            return DataLoader(
+                dataset,
+                shuffle=False,
+                batch_sampler=sampler,
+                collate_fn=dataset.collate,
+                batch_size=1,
+                **loader_kwargs)
+
         elif uniform_iid:
             sampler = UniformWithReplacementSampler(num_samples=len(dataset), sample_rate=sample_rate)
             return DataLoader(
                 dataset,
                 shuffle=False,
-                sampler=sample_rate,
+                batch_sampler=sampler,
                 collate_fn=dataset.collate,
                 batch_size=1,
                 **loader_kwargs)
-        else:
+
+        elif uniform_over_groups:
             assert grouper is not None
             groups, group_counts = grouper.metadata_to_group(
                 dataset.metadata_array,
@@ -63,6 +85,8 @@ def get_train_loader(loader, dataset, batch_size, uniform_iid=None, sample_rate=
                 collate_fn=dataset.collate,
                 batch_size=batch_size,
                 **loader_kwargs)
+        else:
+            raise ValueError()
 
     elif loader == 'group':
         if uniform_over_groups is None:

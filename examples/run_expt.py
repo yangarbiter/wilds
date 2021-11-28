@@ -49,6 +49,7 @@ def main():
     parser.add_argument('--n_groups_per_batch', type=int)
     parser.add_argument('--batch_size', type=int)
     parser.add_argument('--eval_loader', choices=['standard'], default='standard')
+    parser.add_argument('--weighted_uniform_iid', type=parse_bool, const=True, nargs='?')
     parser.add_argument('--uniform_iid', type=parse_bool, const=True, nargs='?')
     parser.add_argument("--sample_rate", type=float, default=0.001, metavar="SR",
                         help="sample rate used for batch construction (default: 0.001)",)
@@ -201,6 +202,7 @@ def main():
                 loader=config.train_loader,
                 dataset=datasets[split]['dataset'],
                 batch_size=config.batch_size,
+                weighted_uniform_iid=config.weighted_uniform_iid,
                 uniform_iid=config.uniform_iid,
                 sample_rate=config.sample_rate,
                 uniform_over_groups=config.uniform_over_groups,

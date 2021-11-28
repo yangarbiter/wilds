@@ -69,14 +69,17 @@ def run_epoch(algorithm, dataset, general_logger, epoch, config, train):
     log_results(algorithm, dataset, general_logger, epoch, batch_idx)
 
     results['epoch'] = epoch
+    if hasattr(algorithm.optimizer, 'privacy_engine'):
+        epsilon, best_alpha = algorithm.optimizer.privacy_engine.get_privacy_spent(config.delta)
+        results['epsilon'] = epsilon
+        results['delta'] = config.delta
+        results['best_alpha'] = best_alpha
+        general_logger.write(f"(ε = {epsilon:.2f}, δ = {config.delta}) for α = {best_alpha}\n")
+
     dataset['eval_logger'].log(results)
     if dataset['verbose']:
         general_logger.write('Epoch eval:\n')
         general_logger.write(results_str)
-
-    if hasattr(algorithm.optimizer, 'privacy_engine'):
-        epsilon, best_alpha = algorithm.optimizer.privacy_engine.get_privacy_spent(config.delta)
-        general_logger.write(f"(ε = {epsilon:.2f}, δ = {config.delta}) for α = {best_alpha}\n")
 
     return results, epoch_y_pred
 
@@ -147,6 +150,12 @@ def evaluate(algorithm, datasets, epoch, general_logger, config, is_best):
             epoch_metadata)
 
         results['epoch'] = epoch
+        if hasattr(algorithm.optimizer, 'privacy_engine'):
+            epsilon, best_alpha = algorithm.optimizer.privacy_engine.get_privacy_spent(config.delta)
+            results['epsilon'] = epsilon
+            results['delta'] = config.delta
+            results['best_alpha'] = best_alpha
+            general_logger.write(f"(ε = {epsilon:.2f}, δ = {config.delta}) for α = {best_alpha}\n")
         dataset['eval_logger'].log(results)
         general_logger.write(f'Eval split {split} at epoch {epoch}:\n')
         general_logger.write(results_str)
