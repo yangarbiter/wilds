@@ -3,6 +3,7 @@
 ROOTDIR="data"
 #MODEL="vgg11"
 MODEL="resnet18"
+BATCHSIZE="64"
 EPOCHS="50"
 
 DATASET="celebA"

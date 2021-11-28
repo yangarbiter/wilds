@@ -31,16 +31,7 @@ def get_train_loader(loader, dataset, batch_size, weighted_uniform_iid=None, uni
         - data loader (DataLoader): Data loader.
     """
     if loader == 'standard':
-        if uniform_over_groups is None:
-            return DataLoader(
-                dataset,
-                shuffle=True, # Shuffle training dataset
-                sampler=None,
-                collate_fn=dataset.collate,
-                batch_size=batch_size,
-                **loader_kwargs)
-
-        elif weighted_uniform_iid:
+        if weighted_uniform_iid:
             assert grouper is not None
             groups, group_counts = grouper.metadata_to_group(
                 dataset.metadata_array,
@@ -85,8 +76,15 @@ def get_train_loader(loader, dataset, batch_size, weighted_uniform_iid=None, uni
                 collate_fn=dataset.collate,
                 batch_size=batch_size,
                 **loader_kwargs)
+
         else:
-            raise ValueError()
+            return DataLoader(
+                dataset,
+                shuffle=True, # Shuffle training dataset
+                sampler=None,
+                collate_fn=dataset.collate,
+                batch_size=batch_size,
+                **loader_kwargs)
 
     elif loader == 'group':
         if uniform_over_groups is None:
