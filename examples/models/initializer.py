@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+from opacus.utils import module_modification
 
 from models.layers import Identity
 
@@ -19,7 +20,7 @@ def initialize_model(config, d_out, is_featurizer=False):
             - model: a model that is equivalent to nn.Sequential(featurizer, classifier)
     """
     if config.model in ('resnet50', 'resnet34', 'resnet18', 'wideresnet50', 'densenet121',
-                        'vgg16', 'vgg11'):
+                        'dp_resnet18', 'vgg16', 'vgg11'):
         if is_featurizer:
             featurizer = initialize_torchvision_model(
                 name=config.model,
@@ -146,6 +147,9 @@ def initialize_torchvision_model(name, d_out, **kwargs):
     elif name == 'densenet121':
         constructor_name = name
         last_layer_name = 'classifier'
+    elif name in ('dp_resnet50', 'dp_resnet34', 'dp_resnet18'):
+        constructor_name = name[3:]
+        last_layer_name = 'fc'
     elif name in ('resnet50', 'resnet34', 'resnet18'):
         constructor_name = name
         last_layer_name = 'fc'
@@ -158,6 +162,9 @@ def initialize_torchvision_model(name, d_out, **kwargs):
     constructor = getattr(torchvision.models, constructor_name)
     model = constructor(**kwargs)
     # adjust the last layer
+
+    if name in ('dp_resnet50', 'dp_resnet34', 'dp_resnet18'):
+        model = module_modification.convert_batchnorm_modules(model)
 
     if name in ('vgg16', 'vgg11'):
         d_features = model.classifier[6].in_features

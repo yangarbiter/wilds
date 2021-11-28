@@ -21,6 +21,7 @@ transforms = ['bert', 'image_base', 'image_resize_and_center_crop', 'poverty', '
 
 # See models/initializer.py
 models = ['resnet18_ms', 'resnet50', 'resnet34', 'resnet18', 'wideresnet50',
+         'dp_resnet18',
          'vgg16', 'vgg11',
          'densenet121', 'bert-base-uncased', 'distilbert-base-uncased',
          'gin-virtual', 'logistic_regression', 'code-gpt-py',
