@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 ROOTDIR="data"
-MODEL="vgg11"
+#MODEL="vgg11"
+MODEL="resnet18"
 EPOCHS="50"
-BATCHSIZE="32"
 
 DATASET="celebA"
 
