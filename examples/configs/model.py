@@ -44,6 +44,12 @@ model_defaults = {
         },
         'target_resolution': (224, 224),
     },
+    'dp_resnet50': {
+        'model_kwargs':{
+            'pretrained':True,
+        },
+        'target_resolution': (224, 224),
+    },
     'resnet18': {
         'model_kwargs':{
             'pretrained':True,

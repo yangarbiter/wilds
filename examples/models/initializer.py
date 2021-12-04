@@ -20,7 +20,7 @@ def initialize_model(config, d_out, is_featurizer=False):
             - model: a model that is equivalent to nn.Sequential(featurizer, classifier)
     """
     if config.model in ('resnet50', 'resnet34', 'resnet18', 'wideresnet50', 'densenet121',
-                        'dp_resnet18', 'vgg16', 'vgg11'):
+                        'dp_resnet18', 'dp_resnet50', 'vgg16', 'vgg11'):
         if is_featurizer:
             featurizer = initialize_torchvision_model(
                 name=config.model,
