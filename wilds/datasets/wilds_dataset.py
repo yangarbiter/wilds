@@ -3,6 +3,7 @@ import time
 
 import torch
 import numpy as np
+import copy
 
 class WILDSDataset:
     """
@@ -53,7 +54,7 @@ class WILDSDataset:
         """
         raise NotImplementedError
 
-    def get_subset(self, split, frac=1.0, transform=None):
+    def get_subset(self, split, train_grouper, frac=1.0, transform=None, subsample_to_minority=False):
         """
         Args:
             - split (str): Split identifier, e.g., 'train', 'val', 'test'.
@@ -68,6 +69,21 @@ class WILDSDataset:
             raise ValueError(f"Split {split} not found in dataset's split_dict.")
         split_mask = self.split_array == self.split_dict[split]
         split_idx = np.where(split_mask)[0]
+
+        ############# subsampling #############
+        if split == 'train':
+            if subsample_to_minority:
+                indices = copy.deepcopy(split_idx)
+                group_array_ = train_grouper.metadata_to_group(self.metadata_array).numpy()
+                group_counts = (np.arange(train_grouper._n_groups).reshape(-1, 1) == group_array_[indices]).sum(1)
+                smallest_group_size = np.min(group_counts)
+                indices = np.array([], dtype=int)
+                for g in np.arange(train_grouper._n_groups):
+                    group_indices = np.where((group_array_ == g) & split_mask)[0]
+                    indices = np.concatenate((indices, np.sort(np.random.permutation(group_indices)[:smallest_group_size])))
+                split_idx = copy.deepcopy(indices)
+                print('finished subsampling')
+
         if frac < 1.0:
             num_to_retain = int(np.round(float(len(split_idx)) * frac))
             split_idx = np.sort(np.random.permutation(split_idx)[:num_to_retain])

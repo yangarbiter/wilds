@@ -37,6 +37,8 @@ def main():
     parser.add_argument('--dataset_kwargs', nargs='*', action=ParseKwargs, default={})
     parser.add_argument('--download', default=False, type=parse_bool, const=True, nargs='?',
                         help='If true, tries to downloads the dataset if it does not exist in root_dir.')
+    parser.add_argument('--subsample', default=False, type=parse_bool, const=True, nargs='?',
+                        help='If true, subsample every group to the minimum group size.')
     parser.add_argument('--frac', type=float, default=1.0,
                         help='Convenience parameter that scales all dataset splits down to the specified fraction, for development purposes. Note that this also scales the test set down, so the reported numbers are not comparable with the full test set.')
     parser.add_argument('--version', default=None, type=str)
@@ -191,11 +193,19 @@ def main():
         else:
             transform = eval_transform
             verbose = False
+        # # Get subset
+        # datasets[split]['dataset'] = full_dataset.get_subset(
+        #     split,
+        #     frac=config.frac,
+        #     transform=transform)
+
         # Get subset
         datasets[split]['dataset'] = full_dataset.get_subset(
             split,
+            train_grouper=train_grouper,
             frac=config.frac,
-            transform=transform)
+            transform=transform,
+            subsample_to_minority=config.subsample)
 
         if split == 'train':
             datasets[split]['loader'] = get_train_loader(
