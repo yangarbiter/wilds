@@ -64,17 +64,20 @@ class UTKFaceDataset(WILDSDataset):
         self._input_array = []
         self._y_array = []
         _race_array = []
-        for im_path in glob(os.path.join(self.data_dir, "UTKFace")):
+        for im_path in glob(os.path.join(self.data_dir, "*.jpg")):
             self._input_array.append(im_path)
             _, filename = os.path.split(im_path)
-            age, gender, race, _ = filename.split("_")
+            try:
+                age, gender, race, _ = filename.split("_")
+            except:
+                print("problem with: ", im_path)
             self._y_array.append(int(gender))
             _race_array.append(int(race))
         self._y_array = torch.LongTensor(self._y_array)
         self._y_size = 1
         self._n_classes = 2
 
-        confounders = _race_array.reshape((-1, 1))
+        confounders = np.array(_race_array).reshape((-1, 1))
 
         self._metadata_array = torch.cat(
             (torch.LongTensor(confounders), self._y_array.reshape((-1, 1))),
