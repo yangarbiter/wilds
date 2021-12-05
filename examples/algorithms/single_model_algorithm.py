@@ -4,6 +4,8 @@ from scheduler import initialize_scheduler
 from optimizer import initialize_optimizer
 from torch.nn.utils import clip_grad_norm_
 from utils import move_to
+from opacus.grad_sample.grad_sample_module import GradSampleModule
+from opacus.optimizers import DPOptimizer
 
 class SingleModelAlgorithm(GroupAlgorithm):
     """
@@ -52,8 +54,8 @@ class SingleModelAlgorithm(GroupAlgorithm):
         y_true = move_to(y_true, self.device)
         g = move_to(self.grouper.metadata_to_group(metadata), self.device)
 
-
-        if self.model.needs_y:
+        if (isinstance(self.model, GradSampleModule) and self.model._module.needs_y) \
+            or ((not isinstance(self.model, GradSampleModule)) and self.model.needs_y):
             if self.training:
                 outputs = self.model(x, y_true)
             else:
@@ -125,6 +127,8 @@ class SingleModelAlgorithm(GroupAlgorithm):
         results['objective'] = objective.item()
         # update
         self.model.zero_grad()
+        if isinstance(self.optimizer, DPOptimizer):
+            self.optimizer.zero_grad()
         objective.backward()
         if self.max_grad_norm:
             clip_grad_norm_(self.model.parameters(), self.max_grad_norm)
