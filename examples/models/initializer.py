@@ -43,8 +43,9 @@ def initialize_model(config, d_out, is_featurizer=False):
         else:
             model = initialize_bert_based_model(config, d_out)
         
-        if "dp_" in config.model:
+        if "dp_" in config.model or "head_" in config.model:
             model = ModuleValidator.fix(model)
+            model.train()
             trainable_layers = [model.bert.encoder.layer[-1], model.bert.pooler, model.classifier]
 
             for p in model.parameters():

@@ -21,7 +21,7 @@ SIGMA="1.0"
 #BATCHSIZE="16"
 #DATASET="civilcomments"
 #EPOCHS="5"
-#SAMPLERATE="0.002"
+#SAMPLERATE="0.0001"
 #SIGMA="0.5"
 
 mkdir -p ./logs/${DATASET}
@@ -35,12 +35,12 @@ mkdir -p ./logs/${DATASET}
 #  --algorithm ERM --download
 
 # weighted + DPSGD
-PYTHONPATH=. python examples/run_expt.py \
-  --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
-  --optimizer SGD --delta 1e-5 --sigma ${SIGMA} --max_per_sample_grad_norm 1.0 --enable_privacy \
-  --weighted_uniform_iid --sample_rate ${SAMPLERATE} --weight_decay 0. \
-  --log_dir ./logs/${DATASET}/weightederm-${MODEL}-dpsgd_1e-5_${SIGMA}_1.0_${SAMPLERATE} \
-  --algorithm ERM
+#PYTHONPATH=. python examples/run_expt.py \
+#  --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+#  --optimizer SGD --delta 1e-5 --sigma ${SIGMA} --max_per_sample_grad_norm 1.0 --enable_privacy \
+#  --weighted_uniform_iid --sample_rate ${SAMPLERATE} --weight_decay 0. \
+#  --log_dir ./logs/${DATASET}/weightederm-${MODEL}-dpsgd_1e-5_${SIGMA}_1.0_${SAMPLERATE} \
+#  --algorithm ERM
 
 ## subsample + DPSGD
 #PYTHONPATH=. python examples/run_expt.py \
@@ -50,11 +50,10 @@ PYTHONPATH=. python examples/run_expt.py \
 #  --log_dir ./logs/${DATASET}/subsamplederm-${MODEL}-dpsgd_1e-5_${SIGMA}_1.0_${SAMPLERATE} \
 #  --algorithm ERM --subsample
 
-
 # DRO + DPSGD
-#python examples/run_expt.py \
-#  --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
-#  --optimizer SGD --delta 1e-5 --sigma ${SIGMA} --max_per_sample_grad_norm 1.0 --enable_privacy \
-#  --uniform_iid --sample_rate ${SAMPLERATE} --weight_decay 0. \
-#  --log_dir ./logs/${DATASET}/groupdro-${MODEL}-dpsgd_1e-5_${SIGMA}_1.0_${SAMPLERATE} \
-#  --algorithm groupDRO --download
+python examples/run_expt.py \
+  --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+  --optimizer SGD --delta 1e-5 --sigma ${SIGMA} --max_per_sample_grad_norm 1.0 --enable_privacy \
+  --uniform_iid --sample_rate ${SAMPLERATE} --weight_decay 0. \
+  --log_dir ./logs/${DATASET}/groupdro-${MODEL}-dpsgd_1e-5_${SIGMA}_1.0_${SAMPLERATE} \
+  --algorithm groupDRO --download

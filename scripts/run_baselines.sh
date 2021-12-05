@@ -12,7 +12,7 @@ BATCHSIZE="64"
 DATASET="waterbirds"
 EPOCHS="300"
 
-MODEL="distilbert-base-uncased"
+MODEL="head_bert-base-uncased"
 BATCHSIZE="16"
 DATASET="civilcomments"
 EPOCHS="5"
