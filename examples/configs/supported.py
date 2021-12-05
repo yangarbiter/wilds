@@ -25,7 +25,8 @@ models = ['resnet18_ms', 'resnet50', 'resnet34', 'resnet18', 'wideresnet50',
          'vgg16', 'vgg11',
          'densenet121',
          'bert-base-uncased', 'distilbert-base-uncased',
-         'dp_bert-base-uncased', 'distilbert-base-uncased',
+         'dp_bert-base-uncased',
+         'head_bert-base-uncased',
          'gin-virtual', 'logistic_regression', 'code-gpt-py',
          'fasterrcnn', 'unet-seq']
 

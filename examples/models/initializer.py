@@ -130,8 +130,8 @@ def initialize_bert_based_model(config, d_out, is_featurizer=False):
     from models.bert.bert import BertClassifier, BertFeaturizer
     from models.bert.distilbert import DistilBertClassifier, DistilBertFeaturizer
 
-    model_name = config.model.replace("dp_", "")
-    if config.model in ['bert-base-uncased', 'dp_bert-base-uncased']:
+    model_name = config.model.replace("dp_", "").replace("head_", "")
+    if config.model in ['bert-base-uncased', 'dp_bert-base-uncased', 'head_bert-base-uncased']:
         if is_featurizer:
             model = BertFeaturizer.from_pretrained(model_name, **config.model_kwargs)
         else:
