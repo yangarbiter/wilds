@@ -6,7 +6,8 @@ MODEL="dp_resnet18"
 BATCHSIZE="8"
 DATASET="celebA"
 EPOCHS="50"
-SAMPLERATE="0.00005"
+SAMPLERATE="0.00005" #
+#SAMPLERATE="0.005" # subsample
 SIGMA="1.0"
 
 #MODEL="dp_resnet50"
