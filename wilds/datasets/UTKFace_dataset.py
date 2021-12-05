@@ -85,7 +85,8 @@ class UTKFaceDataset(WILDSDataset):
         confounder_names = [s.lower() for s in confounder_names]
         self._metadata_fields = confounder_names + ['y']
         self._metadata_map = {
-            'y': ['White', '    Black', '    Asian', '    Indian', '    Others'] # Padding for str formatting
+            'y': ['male', 'female'], # Padding for str formatting
+            'race': ['White', 'Black', 'Asian', 'Indian', 'Others'] # Padding for str formatting
         }
 
         self._eval_grouper = CombinatorialGrouper(
