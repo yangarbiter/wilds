@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
-from opacus.utils import module_modification
+from opacus.validators.module_validator import ModuleValidator
+
 
 from models.layers import Identity
 
@@ -41,6 +42,17 @@ def initialize_model(config, d_out, is_featurizer=False):
             model = (featurizer, classifier)
         else:
             model = initialize_bert_based_model(config, d_out)
+        
+        if "dp_" in config.model:
+            model = ModuleValidator.fix(model)
+            trainable_layers = [model.bert.encoder.layer[-1], model.bert.pooler, model.classifier]
+
+            for p in model.parameters():
+                p.requires_grad = False
+
+            for layer in trainable_layers:
+                for p in layer.parameters():
+                    p.requires_grad = True
 
     elif config.model == 'resnet18_ms':  # multispectral resnet 18
         from models.resnet_multispectral import ResNet18
@@ -117,20 +129,21 @@ def initialize_bert_based_model(config, d_out, is_featurizer=False):
     from models.bert.bert import BertClassifier, BertFeaturizer
     from models.bert.distilbert import DistilBertClassifier, DistilBertFeaturizer
 
-    if config.model == 'bert-base-uncased':
+    model_name = config.model.replace("dp_", "")
+    if config.model in ['bert-base-uncased', 'dp_bert-base-uncased']:
         if is_featurizer:
-            model = BertFeaturizer.from_pretrained(config.model, **config.model_kwargs)
+            model = BertFeaturizer.from_pretrained(model_name, **config.model_kwargs)
         else:
             model = BertClassifier.from_pretrained(
-                config.model,
+                model_name,
                 num_labels=d_out,
                 **config.model_kwargs)
     elif config.model == 'distilbert-base-uncased':
         if is_featurizer:
-            model = DistilBertFeaturizer.from_pretrained(config.model, **config.model_kwargs)
+            model = DistilBertFeaturizer.from_pretrained(model_name, **config.model_kwargs)
         else:
             model = DistilBertClassifier.from_pretrained(
-                config.model,
+                model_name,
                 num_labels=d_out,
                 **config.model_kwargs)
     else:
@@ -164,7 +177,7 @@ def initialize_torchvision_model(name, d_out, **kwargs):
     # adjust the last layer
 
     if name in ('dp_resnet50', 'dp_resnet34', 'dp_resnet18'):
-        model = module_modification.convert_batchnorm_modules(model)
+        model = ModuleValidator.fix(model)
 
     if name in ('vgg16', 'vgg11'):
         d_features = model.classifier[6].in_features

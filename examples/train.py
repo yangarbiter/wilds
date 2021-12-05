@@ -69,8 +69,8 @@ def run_epoch(algorithm, dataset, general_logger, epoch, config, train):
     log_results(algorithm, dataset, general_logger, epoch, batch_idx)
 
     results['epoch'] = epoch
-    if hasattr(algorithm.optimizer, 'privacy_engine'):
-        epsilon, best_alpha = algorithm.optimizer.privacy_engine.get_privacy_spent(config.delta)
+    if hasattr(algorithm, 'privacy_engine'):
+        epsilon, best_alpha = algorithm.privacy_engine.accountant.get_privacy_spent(config.delta)
         results['epsilon'] = epsilon
         results['delta'] = config.delta
         results['best_alpha'] = best_alpha

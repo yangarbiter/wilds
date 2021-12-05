@@ -4,9 +4,8 @@ import argparse
 import pandas as pd
 import torch
 import torch.nn as nn
-import torchvision
-import sys
 from collections import defaultdict
+from opacus import PrivacyEngine
 
 import wilds
 from wilds.common.data_loaders import get_train_loader, get_eval_loader
@@ -31,6 +30,7 @@ def main():
     parser.add_argument('--algorithm', required=True, choices=supported.algorithms)
     parser.add_argument('--root_dir', required=True,
                         help='The directory where [dataset]/data can be found (or should be downloaded to, if it does not exist).')
+    parser.add_argument('--enable_privacy', type=parse_bool, const=False, nargs='?')
 
     # Dataset
     parser.add_argument('--split_scheme', help='Identifies how the train/val/test split is constructed. Choices are dataset-specific.')
@@ -249,6 +249,18 @@ def main():
         config=config,
         datasets=datasets,
         train_grouper=train_grouper)
+    
+    if config.enable_privacy:
+        privacy_engine = PrivacyEngine()
+        algorithm.model, algorithm.optimizer, algorithm.datasets['train']['loader'] = privacy_engine.make_private(
+            module=algorithm.model,
+            optimizer=algorithm.optimizer,
+            data_loader=algorithm.datasets['train']['loader'],
+            poisson_sampling=False,
+            noise_multiplier=config.sigma,
+            max_grad_norm=config.max_per_sample_grad_norm,
+        )
+        algorithm.privacy_engine = privacy_engine
 
     model_prefix = get_model_prefix(datasets['train'], config)
     if not config.eval_only:

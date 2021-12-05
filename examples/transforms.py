@@ -38,7 +38,7 @@ def initialize_bert_transform(config):
             truncation=True,
             max_length=config.max_token_length,
             return_tensors='pt')
-        if config.model == 'bert-base-uncased':
+        if config.model in ['dp_bert-base-uncased', 'bert-base-uncased']:
             x = torch.stack(
                 (tokens['input_ids'],
                  tokens['attention_mask'],
@@ -54,8 +54,8 @@ def initialize_bert_transform(config):
     return transform
 
 def getBertTokenizer(model):
-    if model == 'bert-base-uncased':
-        tokenizer = BertTokenizerFast.from_pretrained(model)
+    if model in ['dp_bert-base-uncased', 'bert-base-uncased']:
+        tokenizer = BertTokenizerFast.from_pretrained(model.replace("dp_", ""))
     elif model == 'distilbert-base-uncased':
         tokenizer = DistilBertTokenizerFast.from_pretrained(model)
     else:

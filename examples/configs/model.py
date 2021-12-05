@@ -1,4 +1,9 @@
 model_defaults = {
+    'dp_bert-base-uncased': {
+        'optimizer': 'AdamW',
+        'max_grad_norm': 1.0,
+        'scheduler': 'linear_schedule_with_warmup',
+    },
     'bert-base-uncased': {
         'optimizer': 'AdamW',
         'max_grad_norm': 1.0,
