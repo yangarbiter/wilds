@@ -21,7 +21,7 @@ class WeightedUniformWithReplacementSampler(Sampler):
             sample_rate (float): probability used in sampling.
             generator (Generator): Generator used in sampling.
         """
-        assert weights.sum().long() == num_samples
+        assert (weights.sum() + .5).long() == num_samples, (weights.sum().long(), num_samples)
         self.weights = weights
         self.num_samples = num_samples
         self.sample_rate = sample_rate
