@@ -30,7 +30,7 @@ def main():
     parser.add_argument('--algorithm', required=True, choices=supported.algorithms)
     parser.add_argument('--root_dir', required=True,
                         help='The directory where [dataset]/data can be found (or should be downloaded to, if it does not exist).')
-    parser.add_argument('--enable_privacy', type=parse_bool, const=False, nargs='?')
+    parser.add_argument('--enable_privacy', default=False, action='store_true')
 
     # Dataset
     parser.add_argument('--split_scheme', help='Identifies how the train/val/test split is constructed. Choices are dataset-specific.')
@@ -262,10 +262,10 @@ def main():
     
     if config.enable_privacy:
         privacy_engine = PrivacyEngine()
-        algorithm.model, algorithm.optimizer, algorithm.datasets['train']['loader'] = privacy_engine.make_private(
+        algorithm.model, algorithm.optimizer, datasets['train']['loader'] = privacy_engine.make_private(
             module=algorithm.model,
             optimizer=algorithm.optimizer,
-            data_loader=algorithm.datasets['train']['loader'],
+            data_loader=datasets['train']['loader'],
             poisson_sampling=False,
             noise_multiplier=config.sigma,
             max_grad_norm=config.max_per_sample_grad_norm,
