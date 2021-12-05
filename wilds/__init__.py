@@ -2,6 +2,7 @@ from .version import __version__
 from .get_dataset import get_dataset
 
 benchmark_datasets = [
+    'utkface',
     'amazon',
     'camelyon17',
     'civilcomments',
