@@ -31,7 +31,7 @@ models = ['resnet18_ms', 'resnet50', 'resnet34', 'resnet18', 'wideresnet50',
          'fasterrcnn', 'unet-seq']
 
 # See algorithms/initializer.py
-algorithms = ['ERM', 'groupDRO', 'deepCORAL', 'IRM']
+algorithms = ['ERM', 'groupDRO', 'deepCORAL', 'IRM', 'IWERM']
 
 # See optimizer.py
 optimizers = ['SGD', 'DPSGD', 'Adam', 'AdamW']

@@ -3,6 +3,7 @@ from algorithms.ERM import ERM
 from algorithms.groupDRO import GroupDRO
 from algorithms.deepCORAL import DeepCORAL
 from algorithms.IRM import IRM
+from algorithms.IWERM import IWERM
 from configs.supported import algo_log_metrics
 from losses import initialize_loss
 
@@ -44,6 +45,19 @@ def initialize_algorithm(config, datasets, train_grouper):
             grouper=train_grouper,
             loss=loss,
             metric=metric,
+            n_train_steps=n_train_steps)
+    elif config.algorithm == 'IWERM':
+        _, group_counts = train_grouper.metadata_to_group(
+                    train_dataset.metadata_array,
+                    return_counts=True)
+        group_weights = 1. / group_counts * group_counts.sum() / len(group_counts)
+        algorithm = IWERM(
+            config=config,
+            d_out=d_out,
+            grouper=train_grouper,
+            loss=loss,
+            metric=metric,
+            group_weights=group_weights,
             n_train_steps=n_train_steps)
     elif config.algorithm == 'groupDRO':
         train_g = train_grouper.metadata_to_group(train_dataset.metadata_array)
