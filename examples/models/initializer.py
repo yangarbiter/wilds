@@ -42,7 +42,7 @@ def initialize_model(config, d_out, is_featurizer=False):
             model = (featurizer, classifier)
         else:
             model = initialize_bert_based_model(config, d_out)
-        
+
         if "dp_" in config.model or "head_" in config.model:
             model = ModuleValidator.fix(model)
             model.train()
