@@ -63,6 +63,7 @@ class INaturalistDataset(WILDSDataset):
 
         _dset = INaturalist(root=root_dir, version="2017", target_type="super", download=download)
         self.groups = np.concatenate([y for (_, y) in _dset])
+        import ipdb; ipdb.set_trace()
 
         self._metadata_fields = confounder_names + ['y']
         self._metadata_map = {

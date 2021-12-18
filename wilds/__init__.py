@@ -3,6 +3,7 @@ from .get_dataset import get_dataset
 
 benchmark_datasets = [
     'utkface',
+    'inaturalist',
     'amazon',
     'camelyon17',
     'civilcomments',

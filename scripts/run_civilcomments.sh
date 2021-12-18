@@ -25,12 +25,12 @@ python examples/run_expt.py \
   --algorithm ERM --download
 
 # IWERM + DPSGD
-python examples/run_expt.py \
-  --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
-  --optimizer SGD --delta 1e-5 --sigma ${SIGMA} --max_per_sample_grad_norm $CLIPNORM --enable_privacy \
-  --uniform_iid --sample_rate $SAMPLERATE --weight_decay 0. \
-  --log_dir ./logs/${DATASET}/erm-${MODEL}-lr1e-5_dpAdamW_1e-5_${SIGMA}_${CLIPNORM}_${SAMPLERATE} \
-  --algorithm IWERM --download
+#python examples/run_expt.py \
+#  --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+#  --optimizer SGD --delta 1e-5 --sigma ${SIGMA} --max_per_sample_grad_norm $CLIPNORM --enable_privacy \
+#  --uniform_iid --sample_rate $SAMPLERATE --weight_decay 0. \
+#  --log_dir ./logs/${DATASET}/iwerm-${MODEL}-lr1e-5_dpAdamW_1e-5_${SIGMA}_${CLIPNORM}_${SAMPLERATE} \
+#  --algorithm IWERM --download
 
 # weighted + DPSGD
 #PYTHONPATH=. python examples/run_expt.py \
