@@ -30,7 +30,7 @@ EPOCHS="50"
 MODEL="resnet50"
 BATCHSIZE="16"
 DATASET="iwildcam"
-EPOCHS="50"
+EPOCHS="12"
 
 mkdir -p ./logs/${DATASET}
 

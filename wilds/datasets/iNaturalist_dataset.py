@@ -56,6 +56,9 @@ class INaturalistDataset(WILDSDataset):
             "Protozoa",
         ]
 
+        if os.path.exists(root_dir):
+            download = False
+
         self.dset = INaturalist(root=root_dir, version="2017", target_type="full", download=download)
         self._y_array = torch.LongTensor(self._y_array)
         self._y_size = 1

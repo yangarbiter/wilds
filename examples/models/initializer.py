@@ -43,7 +43,12 @@ def initialize_model(config, d_out, is_featurizer=False):
         else:
             model = initialize_bert_based_model(config, d_out)
 
-        if "dp_" in config.model or "head_" in config.model:
+
+        if "dpall_" in config.model:
+            model = ModuleValidator.fix(model)
+            model.train()
+
+        elif "dp_" in config.model or "head_" in config.model:
             model = ModuleValidator.fix(model)
             model.train()
             trainable_layers = [model.bert.encoder.layer[-1], model.bert.pooler, model.classifier]
@@ -131,7 +136,7 @@ def initialize_bert_based_model(config, d_out, is_featurizer=False):
     from models.bert.distilbert import DistilBertClassifier, DistilBertFeaturizer
 
     model_name = config.model.replace("dp_", "").replace("head_", "")
-    if config.model in ['bert-base-uncased', 'dp_bert-base-uncased', 'head_bert-base-uncased']:
+    if config.model in ['bert-base-uncased', 'dpall_bert-base-uncased', 'dp_bert-base-uncased', 'head_bert-base-uncased']:
         if is_featurizer:
             model = BertFeaturizer.from_pretrained(model_name, **config.model_kwargs)
         else:
