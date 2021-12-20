@@ -47,6 +47,11 @@ def initialize_model(config, d_out, is_featurizer=False):
         if "dpall_" in config.model:
             model = ModuleValidator.fix(model)
             model.train()
+            for p in model.bert.embeddings.position_embeddings.parameters():
+                p.requires_grad = False
+            #model.bert.embeddings.requires_grad = False
+            #model.bert.embeddings.word_embeddings.requires_grad = False
+            #model.bert.embeddings.position_embeddings.requires_grad = False
 
         elif "dp_" in config.model or "head_" in config.model:
             model = ModuleValidator.fix(model)
@@ -135,7 +140,7 @@ def initialize_bert_based_model(config, d_out, is_featurizer=False):
     from models.bert.bert import BertClassifier, BertFeaturizer
     from models.bert.distilbert import DistilBertClassifier, DistilBertFeaturizer
 
-    model_name = config.model.replace("dp_", "").replace("head_", "")
+    model_name = config.model.replace("dp_", "").replace("dpall_", "").replace("head_", "")
     if config.model in ['bert-base-uncased', 'dpall_bert-base-uncased', 'dp_bert-base-uncased', 'head_bert-base-uncased']:
         if is_featurizer:
             model = BertFeaturizer.from_pretrained(model_name, **config.model_kwargs)

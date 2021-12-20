@@ -18,6 +18,7 @@ SAMPLERATE="0.0002"
 
 # weighted + DPSGD
 MODEL="dpall_bert-base-uncased"
+SAMPLERATE="0.000005"
 PYTHONPATH=. python examples/run_expt.py \
   --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
   --optimizer AdamW --delta 1e-5 --sigma ${SIGMA} --max_per_sample_grad_norm $CLIPNORM --enable_privacy \
