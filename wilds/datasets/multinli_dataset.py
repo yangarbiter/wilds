@@ -86,11 +86,13 @@ class MultiNLIDataset(WILDSDataset):
             dim=1)
         confounder_names = [s.lower() for s in confounder_names]
         self._metadata_fields = confounder_names + ['y']
-        self._identity_vars = confounder_names[0]
+        self._identity_vars = confounder_names
 
-        self._eval_grouper = CombinatorialGrouper(
-            dataset=self,
-            groupby_fields=(confounder_names + ['y']))
+        self._eval_groupers = [
+            CombinatorialGrouper(
+                dataset=self,
+                groupby_fields=[confounder_name + 'y'])
+            for confounder_name in self._identity_vars]
 
     def get_input(self, idx):
         return self.x_array[idx]
