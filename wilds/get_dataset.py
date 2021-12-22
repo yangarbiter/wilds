@@ -37,6 +37,10 @@ def get_dataset(dataset, version=None, **dataset_kwargs):
         from wilds.datasets.celebA_dataset import CelebADataset
         return CelebADataset(version=version, **dataset_kwargs)
 
+    elif dataset == 'multinli':
+        from wilds.datasets.multinli_dataset import MultiNLIDataset
+        return MultiNLIDataset(version=version, **dataset_kwargs)
+
     elif dataset == 'civilcomments':
         from wilds.datasets.civilcomments_dataset import CivilCommentsDataset
         return CivilCommentsDataset(version=version, **dataset_kwargs)
