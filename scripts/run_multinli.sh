@@ -13,10 +13,10 @@ mkdir -p ./logs/${DATASET}
 ####### ERM
 ###############################
 
-#python examples/run_expt.py \
-#  --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
-#  --log_dir ./logs/${DATASET}/erm-${MODEL} \
-#  --algorithm ERM --weight_decay 0. --download
+python examples/run_expt.py \
+  --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+  --log_dir ./logs/${DATASET}/erm-${MODEL} \
+  --algorithm ERM --weight_decay 0. --download
 
 
 ###############################
@@ -31,12 +31,12 @@ CLIPNORM="0.1"
 LR="1e-5"
 
 # weighted + DPSGD
-PYTHONPATH=. python examples/run_expt.py \
-  --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
-  --optimizer AdamW --delta 1e-5 --sigma ${SIGMA} --max_per_sample_grad_norm $CLIPNORM --enable_privacy \
-  --weighted_uniform_iid --sample_rate ${SAMPLERATE} --weight_decay 0. --lr ${LR} \
-  --log_dir ./logs/${DATASET}/weightederm-${MODEL}-lr${LR}_dpAdamW_1e-5_${SIGMA}_${CLIPNORM}_${SAMPLERATE} \
-  --algorithm ERM --download
+#PYTHONPATH=. python examples/run_expt.py \
+#  --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+#  --optimizer AdamW --delta 1e-5 --sigma ${SIGMA} --max_per_sample_grad_norm $CLIPNORM --enable_privacy \
+#  --weighted_uniform_iid --sample_rate ${SAMPLERATE} --weight_decay 0. --lr ${LR} \
+#  --log_dir ./logs/${DATASET}/weightederm-${MODEL}-lr${LR}_dpAdamW_1e-5_${SIGMA}_${CLIPNORM}_${SAMPLERATE} \
+#  --algorithm ERM --download
 
 # IWERM + DPSGD
 #python examples/run_expt.py \

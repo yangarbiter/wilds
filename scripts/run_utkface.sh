@@ -29,6 +29,22 @@ do
   done
 done
 
+for LR in 1e-2 1e-4
+do
+  for CLIPNORM in 1.0
+  do
+    for SIGMA in 0.001 0.01 0.1 1.0
+    do
+      PYTHONPATH=. python examples/run_expt.py \
+        --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+        --optimizer SGD --delta 1e-5 --sigma ${SIGMA} --max_per_sample_grad_norm $CLIPNORM --enable_privacy \
+        --weighted_uniform_iid --sample_rate ${SAMPLERATE} --weight_decay 0. --lr ${LR} \
+        --log_dir ./logs/${DATASET}/weightederm-${MODEL}-lr${LR}-dpsgd_1e-5_${SIGMA}_${CLIPNORM}_${SAMPLERATE} \
+        --algorithm ERM --download
+    done
+  done
+done
+
 #python examples/run_expt.py \
 #  --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
 #  --log_dir ./logs/${DATASET}/erm-${MODEL} \
