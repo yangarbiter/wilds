@@ -91,7 +91,7 @@ class MultiNLIDataset(WILDSDataset):
         self._eval_groupers = [
             CombinatorialGrouper(
                 dataset=self,
-                groupby_fields=[confounder_name + 'y'])
+                groupby_fields=[confounder_name, 'y'])
             for confounder_name in self._identity_vars]
 
     def get_input(self, idx):
