@@ -55,7 +55,7 @@ def initialize_bert_transform(config):
 
 def getBertTokenizer(model):
     if model in ['dp_bert-base-uncased', 'dpall_bert-base-uncased', 'head_bert-base-uncased', 'bert-base-uncased']:
-        tokenizer = BertTokenizerFast.from_pretrained(model.replace("dp_", "").replace("head_", ""))
+        tokenizer = BertTokenizerFast.from_pretrained(model.replace("dpall_", "").replace("dp_", "").replace("head_", ""))
     elif model == 'distilbert-base-uncased':
         tokenizer = DistilBertTokenizerFast.from_pretrained(model)
     else:
