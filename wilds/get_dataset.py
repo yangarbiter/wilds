@@ -41,6 +41,10 @@ def get_dataset(dataset, version=None, **dataset_kwargs):
         from wilds.datasets.multinli_dataset import MultiNLIDataset
         return MultiNLIDataset(version=version, **dataset_kwargs)
 
+    elif dataset == 'coarsecivilcomments':
+        from wilds.datasets.coarsecivilcomments_dataset import CoarseCivilCommentsDataset
+        return CoarseCivilCommentsDataset(version=version, **dataset_kwargs)
+
     elif dataset == 'civilcomments':
         from wilds.datasets.civilcomments_dataset import CivilCommentsDataset
         return CivilCommentsDataset(version=version, **dataset_kwargs)
