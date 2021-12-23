@@ -162,7 +162,7 @@ dataset_defaults = {
         'model': 'distilbert-base-uncased',
         'transform': 'bert',
         'loss_function': 'cross_entropy',
-        'groupby_fields': ['identity_any', 'y'],
+        'groupby_fields': ['group', 'y'],
         'val_metric': 'acc_wg',
         'val_metric_decreasing': False,
         'batch_size': 16,

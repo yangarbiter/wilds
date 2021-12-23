@@ -58,8 +58,8 @@ class CoarseCivilCommentsDataset(WILDSDataset):
     _dataset_name = 'coarsecivilcomments'
     _versions_dict = {
         '1.0': {
-            'download_url': 'https://worksheets.codalab.org/rest/bundles/0x8cd3de0634154aeaad2ee6eb96723c6e/contents/blob/',
-            'compressed_size': 90_644_480}}
+            'download_url': '',
+            'compressed_size': None}}
 
     def __init__(self, version=None, root_dir='data', download=False, split_scheme='official'):
         self._version = version
@@ -69,14 +69,11 @@ class CoarseCivilCommentsDataset(WILDSDataset):
 
         text = pd.read_csv(
             os.path.join(
-                self._data_dir, "civilcomments/civilcomments_coarse.csv"
+                self._data_dir, "civilcomments_coarse.csv"
             )
         )
 
-        self.text_array = list(text["comment_text"])
-
-        self.x = df["filename"].astype(str).map(lambda x: os.path.join(root, x)).tolist()
-        self.g = 
+        self._text_array = list(text["comment_text"])
 
         # Read in metadata
         self._metadata_df = pd.read_csv(metadata)
@@ -84,7 +81,7 @@ class CoarseCivilCommentsDataset(WILDSDataset):
         # Get the y values
         self._y_array = torch.LongTensor(self._metadata_df['y'].values)
         self._y_size = 1
-        self._n_classes = 2
+        self._n_classes = len(np.unique(self._y_array))
 
         # Extract splits
         self._split_scheme = split_scheme
@@ -94,12 +91,25 @@ class CoarseCivilCommentsDataset(WILDSDataset):
 
         self._metadata_array = torch.cat(
             (
-                torch.LongTensor(self._metadata_df["a"].values),
+                torch.LongTensor(self._metadata_df["a"].values.reshape(-1, 1)),
                 self._y_array.reshape((-1, 1))
             ),
             dim=1
         )
-        self._metadata_fields = ["identity_any", 'y']
+        self._metadata_fields = ["group", 'y']
+        self._metadata_map = {
+            'group': [
+                "male",
+                "female",
+                "LGBTQ",
+                "christian",
+                "muslim",
+                "other_religions",
+                "black",
+                "white",
+            ],
+            'y': ['not toxic', 'toxic'] # Padding for str formatting
+        }
 
         self._eval_grouper = CombinatorialGrouper(
                 dataset=self, groupby_fields=self._metadata_fields)

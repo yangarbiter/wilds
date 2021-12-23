@@ -7,6 +7,7 @@ benchmark_datasets = [
     'inaturalist',
     'amazon',
     'camelyon17',
+    'coarsecivilcomments',
     'civilcomments',
     'iwildcam',
     'ogb-molpcba',
