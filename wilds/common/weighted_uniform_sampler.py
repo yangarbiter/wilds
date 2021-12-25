@@ -3,7 +3,7 @@
 
 from typing import Sequence
 
-
+import numpy as np
 import torch
 from torch.utils.data import Sampler
 
@@ -14,7 +14,8 @@ class WeightedUniformWithReplacementSampler(Sampler):
     Each sample is selected with a probability equal to ``sample_rate``.
     """
 
-    def __init__(self, weights: Sequence[int], num_samples: int, sample_rate: float, generator=None):
+    def __init__(self, weights: Sequence[int], num_samples: int,
+        sample_rate: float, clip_sample_rate: float, generator=None):
         r"""
         Args:
             num_samples (int): number of samples to draw.
@@ -43,10 +44,13 @@ class WeightedUniformWithReplacementSampler(Sampler):
 
     def __iter__(self):
         num_batches = int(1 / self.sample_rate)
+        sampling_probas = (self.weights * self.sample_rate)
+        if self.clip_sample_rate is not None:
+            sampling_probas = np.clip(sampling_probas, 0, self.clip_sample_rate)
         while num_batches > 0:
             mask = (
                 torch.rand(self.num_samples, generator=self.generator)
-                < (self.weights * self.sample_rate)
+                < sampling_probas
             )
             indices = mask.nonzero(as_tuple=False).reshape(-1).tolist()
             if len(indices) != 0:

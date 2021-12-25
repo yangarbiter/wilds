@@ -11,39 +11,80 @@ EPOCHS="100"
 mkdir -p ./logs/${DATASET}
 
 #############################
+# ERM + DPSGD
+#############################
+#MODEL="dp_resnet50"
+#SAMPLERATE=0.001
+#for LR in 1e-3
+#do
+#  for CLIPNORM in 1.0
+#  do
+#    for SIGMA in 0.0001 10.0
+#    do
+#      python examples/run_expt.py \
+#        --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+#        --optimizer SGD --delta 1e-5 --sigma ${SIGMA} --max_per_sample_grad_norm $CLIPNORM --enable_privacy \
+#        --uniform_iid --sample_rate $SAMPLERATE --weight_decay 0. --lr ${LR} \
+#        --log_dir ./logs/${DATASET}/erm-${MODEL}-lr${LR}-dpsgd_1e-5_${SIGMA}_${CLIPNORM}_${SAMPLERATE} \
+#        --algorithm ERM --download
+#    done
+#  done
+#done
+
+#############################
 # DPSGD IW
 #############################
 DATASET="utkface"
 MODEL="dp_resnet50"
 SAMPLERATE=0.001
-for CLIPNORM in 0.1 10.0
+for LR in 1e-3
 do
-  for SIGMA in 0.001 0.01 0.1 1.0
+  for CLIPWEIGHT in 0.001
   do
-    PYTHONPATH=. python examples/run_expt.py \
-      --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
-      --optimizer SGD --delta 1e-5 --sigma ${SIGMA} --max_per_sample_grad_norm $CLIPNORM --enable_privacy \
-      --weighted_uniform_iid --sample_rate ${SAMPLERATE} --weight_decay 0. \
-      --log_dir ./logs/${DATASET}/weightederm-${MODEL}-dpsgd_1e-5_${SIGMA}_${CLIPNORM}_${SAMPLERATE} \
-      --algorithm ERM --download
-  done
-done
-
-for LR in 1e-2 1e-4
-do
-  for CLIPNORM in 1.0
-  do
-    for SIGMA in 0.001 0.01 0.1 1.0
+    for CLIPNORM in 1.0
     do
-      PYTHONPATH=. python examples/run_expt.py \
-        --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
-        --optimizer SGD --delta 1e-5 --sigma ${SIGMA} --max_per_sample_grad_norm $CLIPNORM --enable_privacy \
-        --weighted_uniform_iid --sample_rate ${SAMPLERATE} --weight_decay 0. --lr ${LR} \
-        --log_dir ./logs/${DATASET}/weightederm-${MODEL}-lr${LR}-dpsgd_1e-5_${SIGMA}_${CLIPNORM}_${SAMPLERATE} \
-        --algorithm ERM --download
+      for SIGMA in 0.01
+      do
+        PYTHONPATH=. python examples/run_expt.py \
+          --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+          --optimizer SGD --delta 1e-5 --sigma ${SIGMA} --max_per_sample_grad_norm $CLIPNORM --enable_privacy \
+          --weighted_uniform_iid --sample_rate ${SAMPLERATE} --weight_decay 0. --lr ${LR} \
+          --clip_sample_rate $CLIPWEIGHT \
+          --log_dir ./logs/${DATASET}/weightederm-cw${CLIPWEIGHT}-${MODEL}-lr${LR}-dpsgd_1e-5_${SIGMA}_${CLIPNORM}_${SAMPLERATE} \
+          --algorithm ERM --download
+      done
     done
   done
 done
+#
+#for CLIPNORM in 0.1 10.0
+#do
+#  for SIGMA in 0.001 0.01 0.1 1.0
+#  do
+#    PYTHONPATH=. python examples/run_expt.py \
+#      --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+#      --optimizer SGD --delta 1e-5 --sigma ${SIGMA} --max_per_sample_grad_norm $CLIPNORM --enable_privacy \
+#      --weighted_uniform_iid --sample_rate ${SAMPLERATE} --weight_decay 0. \
+#      --log_dir ./logs/${DATASET}/weightederm-${MODEL}-dpsgd_1e-5_${SIGMA}_${CLIPNORM}_${SAMPLERATE} \
+#      --algorithm ERM --download
+#  done
+#done
+#
+#for LR in 1e-2 1e-4
+#do
+#  for CLIPNORM in 1.0
+#  do
+#    for SIGMA in 0.001 0.01 0.1 1.0
+#    do
+#      PYTHONPATH=. python examples/run_expt.py \
+#        --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+#        --optimizer SGD --delta 1e-5 --sigma ${SIGMA} --max_per_sample_grad_norm $CLIPNORM --enable_privacy \
+#        --weighted_uniform_iid --sample_rate ${SAMPLERATE} --weight_decay 0. --lr ${LR} \
+#        --log_dir ./logs/${DATASET}/weightederm-${MODEL}-lr${LR}-dpsgd_1e-5_${SIGMA}_${CLIPNORM}_${SAMPLERATE} \
+#        --algorithm ERM --download
+#    done
+#  done
+#done
 
 #python examples/run_expt.py \
 #  --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \

@@ -9,7 +9,7 @@ from .weighted_uniform_sampler import WeightedUniformWithReplacementSampler
 
 
 def get_train_loader(loader, dataset, batch_size, weighted_uniform_iid=None, uniform_iid=None, sample_rate=None,
-        uniform_over_groups=None, grouper=None, distinct_groups=True, n_groups_per_batch=None, **loader_kwargs):
+        uniform_over_groups=None, grouper=None, distinct_groups=True, n_groups_per_batch=None, clip_sample_rate=None, **loader_kwargs):
     """
     Constructs and returns the data loader for training.
     Args:
@@ -40,7 +40,8 @@ def get_train_loader(loader, dataset, batch_size, weighted_uniform_iid=None, uni
             weights = group_weights[groups]
             weights = weights / weights.sum() * len(dataset)
 
-            sampler = WeightedUniformWithReplacementSampler(weights, num_samples=len(dataset), sample_rate=sample_rate)
+            sampler = WeightedUniformWithReplacementSampler(weights,
+                    num_samples=len(dataset), sample_rate=sample_rate, clip_sample_rate=clip_sample_rate)
             return DataLoader(
                 dataset,
                 shuffle=False,

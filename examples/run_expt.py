@@ -55,6 +55,8 @@ def main():
     parser.add_argument('--uniform_iid', type=parse_bool, const=True, nargs='?')
     parser.add_argument("--sample_rate", type=float, default=0.001, metavar="SR",
                         help="sample rate used for batch construction (default: 0.001)",)
+    parser.add_argument("--clip_sample_rate", type=float, default=None, metavar="SR",
+                        help=" (default: 0.01)",)
 
     # Model
     parser.add_argument('--model', choices=supported.models)
@@ -219,6 +221,7 @@ def main():
                 grouper=train_grouper,
                 distinct_groups=config.distinct_groups,
                 n_groups_per_batch=config.n_groups_per_batch,
+                clip_sample_rate=config.clip_sample_rate,
                 **config.loader_kwargs)
         else:
             datasets[split]['loader'] = get_eval_loader(
