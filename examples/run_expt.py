@@ -14,6 +14,7 @@ from wilds.common.grouper import CombinatorialGrouper
 from utils import set_seed, Logger, BatchLogger, log_config, ParseKwargs, load, initialize_wandb, log_group_data, parse_bool, get_model_prefix
 from train import train, evaluate
 from algorithms.initializer import initialize_algorithm
+from optimizer import NoisyOptimizerWrapper
 from transforms import initialize_transform
 from configs.utils import populate_defaults
 import configs.supported as supported
@@ -31,6 +32,7 @@ def main():
     parser.add_argument('--root_dir', required=True,
                         help='The directory where [dataset]/data can be found (or should be downloaded to, if it does not exist).')
     parser.add_argument('--enable_privacy', default=False, action='store_true')
+    parser.add_argument('--apply_noise', default=False, action='store_true')
 
     # Dataset
     parser.add_argument('--split_scheme', help='Identifies how the train/val/test split is constructed. Choices are dataset-specific.')
@@ -274,6 +276,9 @@ def main():
             max_grad_norm=config.max_per_sample_grad_norm,
         )
         algorithm.privacy_engine = privacy_engine
+
+    if config.apply_noise:
+        algorithm.optimizer = NoisyOptimizerWrapper(algorithm.optimizer, noise_multiplier=config.sigma)
 
     model_prefix = get_model_prefix(datasets['train'], config)
     if not config.eval_only:
