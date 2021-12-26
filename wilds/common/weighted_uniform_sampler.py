@@ -26,6 +26,7 @@ class WeightedUniformWithReplacementSampler(Sampler):
         self.weights = weights
         self.num_samples = num_samples
         self.sample_rate = sample_rate
+        self.clip_sample_rate = clip_sample_rate
         self.generator = generator
         if self.generator is None:
             generator = torch.Generator()
