@@ -2,7 +2,6 @@
 
 ROOTDIR="data"
 
-MODEL="dp_resnet50"
 BATCHSIZE="8"
 DATASET="celebA"
 EPOCHS="50"
@@ -12,9 +11,20 @@ CLIPNORM="0.1"
 
 mkdir -p ./logs/${DATASET}
 
+
 #############################
 # weighted + DPSGD
 #############################
+#MODEL="resnet50"
+#python examples/run_expt.py \
+#  --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+#  --log_dir ./logs/${DATASET}/iwerm-${MODEL} \
+#  --algorithm IWERM --weight_decay 0. --download
+
+#############################
+# weighted + DPSGD
+#############################
+#MODEL="dp_resnet50"
 #for CLIPNORM in 1.0
 #do
 #  for SIGMA in 0.1 1.0
@@ -58,7 +68,6 @@ done
 #    --log_dir ./logs/${DATASET}/groupdro-${MODEL}-dpsgd_1e-5_${SIGMA}_${CLIPNORM}_${SAMPLERATE} \
 #    --algorithm groupDRO --download
 #done
-
 
 # IWERM + DPSGD
 #python examples/run_expt.py \
