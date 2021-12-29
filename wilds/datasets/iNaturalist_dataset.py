@@ -30,11 +30,11 @@ class INaturalistDataset(WILDSDataset):
     Website:
 
     """
-    _dataset_name = 'celebA'
+    _dataset_name = 'inaturalist'
     _versions_dict = {
         '1.0': {
-            'download_url': 'https://worksheets.codalab.org/rest/bundles/0xfe55077f5cd541f985ebf9ec50473293/contents/blob/',
-            'compressed_size': 1_308_557_312}}
+            'download_url': '',
+            'compressed_size': 0}}
 
     def __init__(self, version=None, root_dir='data', download=False, split_scheme='official'):
         self._version = version
@@ -59,75 +59,41 @@ class INaturalistDataset(WILDSDataset):
         if os.path.exists(root_dir):
             download = False
 
-        self.dset = INaturalist(root=root_dir, version="2017", target_type="full", download=download)
-        self._y_array = torch.LongTensor(self._y_array)
+        self.dset = INaturalist(root=self._data_dir, version="2017", target_type="super", download=download)
+        y_array = np.array([self.dset.categories_map[y]['super'] for (y, _) in self.dset.index])
+        self._y_array = torch.LongTensor(y_array)
         self._y_size = 1
-        self._n_classes = 2
+        self._n_classes = len(np.unique(self._y_array))
 
-        _dset = INaturalist(root=root_dir, version="2017", target_type="super", download=download)
-        self.groups = np.concatenate([y for (_, y) in _dset])
-        import ipdb; ipdb.set_trace()
-
-        self._metadata_fields = confounder_names + ['y']
+        self._metadata_fields = ['y']
         self._metadata_map = {
-            'y': ['male', 'female'], # Padding for str formatting
+            'y': sorted(self.dset.categories_index['super'].keys()),
         }
 
-        # Split out filenames and attribute names
-        # Note: idx and filenames are off by one.
-        self._input_array = attrs_df['image_id'].values
-        self._original_resolution = (178, 218)
-        attrs_df = attrs_df.drop(labels='image_id', axis='columns')
-        attr_names = attrs_df.columns.copy()
-        def attr_idx(attr_name):
-            return attr_names.get_loc(attr_name)
-
-        # Then cast attributes to numpy array and set them to 0 and 1
-        # (originally, they're -1 and 1)
-        attrs_df = attrs_df.values
-        attrs_df[attrs_df == -1] = 0
-
-        # Get the y values
-        target_idx = attr_idx(target_name)
-        self._y_array = torch.LongTensor(attrs_df[:, target_idx])
-        self._y_size = 1
-        self._n_classes = 2
-
-        # Get metadata
-        confounder_idx = [attr_idx(a) for a in confounder_names]
-        confounders = attrs_df[:, confounder_idx]
-
-        self._metadata_array = torch.cat(
-            (torch.LongTensor(confounders), self._y_array.reshape((-1, 1))),
-            dim=1)
-        confounder_names = [s.lower() for s in confounder_names]
-        self._metadata_fields = confounder_names + ['y']
-        self._metadata_map = {
-            'y': ['not blond', '    blond'] # Padding for str formatting
-        }
+        self._metadata_array = self._y_array.reshape(-1, 1)
 
         self._eval_grouper = CombinatorialGrouper(
             dataset=self,
-            groupby_fields=(confounder_names + ['y']))
+            groupby_fields=['y']
+        )
 
         # Extract splits
         self._split_scheme = split_scheme
         if self._split_scheme != 'official':
             raise ValueError(f'Split scheme {self._split_scheme} not recognized')
-        split_df = pd.read_csv(
-            os.path.join(self.data_dir, 'list_eval_partition.csv'))
-        self._split_array = split_df['partition'].values
+
+        random_state = np.random.RandomState(0)
+        self._split_array = np.zeros(len(self._y_array))
+        self._split_array[:550000] = 0 # train
+        self._split_array[550000:600000] = 1 # val
+        self._split_array[600000:675170] = 2 # test
+        random_state.shuffle(self._split_array)
 
         super().__init__(root_dir, download, split_scheme)
 
     def get_input(self, idx):
-       # Note: idx and filenames are off by one.
-       img_filename = os.path.join(
-           self.data_dir,
-           'img_align_celeba',
-           self._input_array[idx])
-       x = Image.open(img_filename).convert('RGB')
-       return x
+        img = self.dset[idx][0]
+        return img.convert('RGB')
 
     def eval(self, y_pred, y_true, metadata, prediction_fn=None):
         """
