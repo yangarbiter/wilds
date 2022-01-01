@@ -4,6 +4,7 @@ from .get_dataset import get_dataset
 benchmark_datasets = [
     'multinli',
     'utkface',
+    'inatsub',
     'inaturalist',
     'amazon',
     'camelyon17',

@@ -21,6 +21,10 @@ def get_dataset(dataset, version=None, **dataset_kwargs):
         from wilds.datasets.iNaturalist_dataset import INaturalistDataset
         return INaturalistDataset(version=version, **dataset_kwargs)
 
+    if dataset == 'inatsub':
+        from wilds.datasets.inatsub_dataset import INatSubDataset
+        return INatSubDataset(version=version, **dataset_kwargs)
+
     if dataset == 'utkface':
         from wilds.datasets.UTKFace_dataset import UTKFaceDataset
         return UTKFaceDataset(version=version, **dataset_kwargs)
