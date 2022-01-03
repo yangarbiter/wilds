@@ -11,9 +11,37 @@ CLIPNORM="0.1"
 
 mkdir -p ./logs/${DATASET}
 
+#############################
+# IWERM + NoiseSGD
+#############################
+MODEL="resnet50"
+for LR in 1e-3
+do
+  for SIGMA in 0.01 0.1 1.0
+  do
+    python examples/run_expt.py \
+      --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+      --optimizer SGD --delta 1e-5 --sigma ${SIGMA} --apply_noise \
+      --weight_decay 0. --lr ${LR} \
+      --log_dir ./logs/${DATASET}/iwerm-${MODEL}-lr${LR}-noisesgd_1e-5_${SIGMA} \
+      --algorithm IWERM --download
+  done
+done
 
 #############################
-# weighted + DPSGD
+# ERM
+#############################
+#MODEL="resnet50"
+#for wd in 1.0 0.1 0.01
+#do
+#  python examples/run_expt.py \
+#    --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+#    --log_dir ./logs/${DATASET}/iwerm-${MODEL}_wd${wd} \
+#    --algorithm ERM --weight_decay ${wd} --download
+#done
+
+#############################
+# IWERM
 #############################
 #MODEL="resnet50"
 #python examples/run_expt.py \
