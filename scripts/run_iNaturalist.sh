@@ -35,10 +35,10 @@ LR="1e-3"
 #  --log_dir ./logs/${DATASET}/groupDRO-${MODEL}-lr${LR}_wd1.0 \
 #  --algorithm groupDRO --weight_decay 1.0 --lr ${LR} --download
 
-python examples/run_expt.py \
-  --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
-  --log_dir ./logs/${DATASET}/groupDRO-${MODEL}-lr${LR}_wd0.001 \
-  --algorithm groupDRO --weight_decay 0.001 --lr ${LR} --download
+#python examples/run_expt.py \
+#  --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+#  --log_dir ./logs/${DATASET}/groupDRO-${MODEL}-lr${LR}_wd0.001 \
+#  --algorithm groupDRO --weight_decay 0.001 --lr ${LR} --download
 
 #############################
 # weighted + DPSGD
@@ -59,3 +59,20 @@ python examples/run_expt.py \
 #      --algorithm ERM --download
 #  done
 #done
+
+#############################
+# IWERM + NoiseSGD
+#############################
+MODEL="resnet18"
+for LR in 1e-3
+do
+  for SIGMA in 0.1 #0.01 1.0
+  do
+    python examples/run_expt.py \
+      --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+      --optimizer SGD --delta 1e-5 --sigma ${SIGMA} --apply_noise \
+      --weight_decay 0. --lr ${LR} \
+      --log_dir ./logs/${DATASET}/iwerm-${MODEL}-lr${LR}-noisesgd_1e-5_${SIGMA} \
+      --algorithm IWERM --download
+  done
+done
