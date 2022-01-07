@@ -51,8 +51,8 @@ mkdir -p ./logs/${DATASET}
 #############################
 # DPSGD IW
 #############################
-MODEL="dp_resnet50"
-SAMPLERATE=0.001
+#MODEL="dp_resnet50"
+#SAMPLERATE=0.001
 #for CLIPNORM in 0.1 10.0
 #do
 #  for SIGMA in 0.001 0.01 0.1 1.0
@@ -66,21 +66,21 @@ SAMPLERATE=0.001
 #  done
 #done
 #
-for LR in 1e-3
-do
-  for CLIPNORM in 10.0 1.0
-  do
-    for SIGMA in 0.000001 0.00001 0.0001
-    do
-      PYTHONPATH=. python examples/run_expt.py \
-        --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
-        --optimizer SGD --delta 1e-5 --sigma ${SIGMA} --max_per_sample_grad_norm $CLIPNORM --enable_privacy \
-        --weighted_uniform_iid --sample_rate ${SAMPLERATE} --weight_decay 0. --lr ${LR} \
-        --log_dir ./logs/${DATASET}/weightederm-${MODEL}-lr${LR}-dpsgd_1e-5_${SIGMA}_${CLIPNORM}_${SAMPLERATE} \
-        --algorithm ERM --download
-    done
-  done
-done
+#for LR in 1e-3
+#do
+#  for CLIPNORM in 10.0 1.0
+#  do
+#    for SIGMA in 0.000001 0.00001 0.0001
+#    do
+#      PYTHONPATH=. python examples/run_expt.py \
+#        --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+#        --optimizer SGD --delta 1e-5 --sigma ${SIGMA} --max_per_sample_grad_norm $CLIPNORM --enable_privacy \
+#        --weighted_uniform_iid --sample_rate ${SAMPLERATE} --weight_decay 0. --lr ${LR} \
+#        --log_dir ./logs/${DATASET}/weightederm-${MODEL}-lr${LR}-dpsgd_1e-5_${SIGMA}_${CLIPNORM}_${SAMPLERATE} \
+#        --algorithm ERM --download
+#    done
+#  done
+#done
 
 #for LR in 1e-2 1e-4
 #do
@@ -150,6 +150,27 @@ done
 #    done
 #  done
 #done
+
+#############################
+# IWERM
+#############################
+MODEL="resnet50"
+python examples/run_expt.py \
+  --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+  --log_dir ./logs/${DATASET}/iwerm-${MODEL}_wd1.0 \
+  --algorithm IWERM --weight_decay 1.0 --download
+
+#############################
+# ERM
+#############################
+MODEL="resnet50"
+for wd in 1.0 0.1 0.01 0.001
+do
+  python examples/run_expt.py \
+    --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+    --log_dir ./logs/${DATASET}/groupDRO-${MODEL}_wd${wd} \
+    --algorithm ERM --weight_decay ${wd} --download
+done
 
 #############################
 # ERM IW
