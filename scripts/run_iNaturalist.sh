@@ -11,6 +11,26 @@ mkdir -p ./logs/${DATASET}
 
 LR="1e-3"
 
+#############################
+# ISERM + NoiseSGD
+#############################
+MODEL="resnet50"
+for LR in 1e-3
+do
+  for SIGMA in 0.1 0.01 # 0.0001 0.01 1.0
+  do
+    python examples/run_expt.py \
+      --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+      --optimizer SGD --sigma ${SIGMA} --apply_noise \
+      --weight_decay 0. --lr ${LR} --uniform_over_groups \
+      --log_dir ./logs/${DATASET}/erm_reweight-${MODEL}-lr${LR}-noisesgd_${SIGMA} \
+      --algorithm ERM --download
+  done
+done
+
+#############################
+# ERM
+#############################
 #python examples/run_expt.py \
 #  --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
 #  --log_dir ./logs/${DATASET}/erm-${MODEL}-lr${LR} \
