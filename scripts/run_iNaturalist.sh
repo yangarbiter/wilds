@@ -29,6 +29,27 @@ LR="1e-3"
 #done
 
 #############################
+# ISERM + NoiseSGD
+#############################
+MODEL="resnet18"
+for LR in 1e-3
+do
+  python examples/run_expt.py \
+    --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+    --optimizer SGD --weight_decay 0. --lr ${LR} --uniform_over_groups \
+    --log_dir ./logs/${DATASET}/erm_reweight-${MODEL}-lr${LR} \
+    --algorithm ERM --download
+  for SIGMA in 0.1 0.01 # 0.001 1.0
+  do
+    python examples/run_expt.py \
+      --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+      --optimizer SGD --weight_decay ${wd} --lr ${LR} --uniform_over_groups \
+      --log_dir ./logs/${DATASET}/erm_reweight-${MODEL}-lr${LR}_wd${wd} \
+      --algorithm ERM --download
+  done
+done
+
+#############################
 # ERM
 #############################
 #python examples/run_expt.py \
@@ -118,22 +139,22 @@ LR="1e-3"
 #############################
 # weighted + DPSGD
 #############################
-MODEL="dp_resnet18"
-SAMPLERATE=0.0001
-LR="1e-3"
-BATCHSIZE="64"
-for CLIPNORM in 10.0
-do
-  for SIGMA in 0.00001
-  do
-    PYTHONPATH=. python examples/run_expt.py \
-      --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
-      --optimizer SGD --delta 1e-5 --sigma ${SIGMA} --max_per_sample_grad_norm $CLIPNORM --enable_privacy \
-      --weighted_uniform_iid --sample_rate ${SAMPLERATE} --weight_decay 0. --lr ${LR} \
-      --log_dir ./logs/${DATASET}/weightederm-${MODEL}-dpsgd_1e-5_${SIGMA}_${CLIPNORM}_${SAMPLERATE} \
-      --algorithm ERM --download
-  done
-done
+#MODEL="dp_resnet18"
+#SAMPLERATE=0.0001
+#LR="1e-3"
+#BATCHSIZE="64"
+#for CLIPNORM in 10.0
+#do
+#  for SIGMA in 0.0001
+#  do
+#    PYTHONPATH=. python examples/run_expt.py \
+#      --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+#      --optimizer SGD --delta 1e-5 --sigma ${SIGMA} --max_per_sample_grad_norm $CLIPNORM --enable_privacy \
+#      --weighted_uniform_iid --sample_rate ${SAMPLERATE} --weight_decay 0. --lr ${LR} \
+#      --log_dir ./logs/${DATASET}/weightederm-${MODEL}-dpsgd_1e-5_${SIGMA}_${CLIPNORM}_${SAMPLERATE} \
+#      --algorithm ERM --download
+#  done
+#done
 
 #############################
 # IWERM + NoiseSGD
