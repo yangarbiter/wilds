@@ -104,7 +104,6 @@ class CelebADataset(WILDSDataset):
             dataset=self,
             groupby_fields=(confounder_names + ['y']))
 
-        import ipdb; ipdb.set_trace()
         # Extract splits
         self._split_scheme = split_scheme
         if self._split_scheme == 'official':
