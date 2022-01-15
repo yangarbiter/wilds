@@ -37,23 +37,33 @@ done
 #############################
 # ERM
 #############################
+#BATCHSIZE="64"
 #MODEL="resnet50"
 #for wd in 1.0 0.1 0.01
 #do
 #  python examples/run_expt.py \
 #    --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
-#    --log_dir ./logs/${DATASET}/iwerm-${MODEL}_wd${wd} \
+#    --log_dir ./logs/${DATASET}/erm-${MODEL}_wd${wd} \
 #    --algorithm ERM --weight_decay ${wd} --download
 #done
 
 #############################
 # IWERM
 #############################
-#MODEL="resnet50"
+BATCHSIZE="64"
+MODEL="resnet50"
 #python examples/run_expt.py \
 #  --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
 #  --log_dir ./logs/${DATASET}/iwerm-${MODEL} \
 #  --algorithm IWERM --weight_decay 0. --download
+for wd in 0.001 0.01 #1.0 0.1
+do
+  python examples/run_expt.py \
+    --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+    --log_dir ./logs/${DATASET}/iwerm-${MODEL}_wd${wd} \
+    --algorithm IWERM --weight_decay ${wd} --download
+done
+
 
 #############################
 # weighted + DPSGD
@@ -61,7 +71,7 @@ done
 #MODEL="dp_resnet50"
 #for CLIPNORM in 1.0
 #do
-#  for SIGMA in 0.1 1.0
+#  for SIGMA in 0.0001 10.0
 #  do
 #    PYTHONPATH=. python examples/run_expt.py \
 #      --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
