@@ -104,13 +104,23 @@ class CelebADataset(WILDSDataset):
             dataset=self,
             groupby_fields=(confounder_names + ['y']))
 
+        import ipdb; ipdb.set_trace()
         # Extract splits
         self._split_scheme = split_scheme
-        if self._split_scheme != 'official':
-            raise ValueError(f'Split scheme {self._split_scheme} not recognized')
-        split_df = pd.read_csv(
-            os.path.join(self.data_dir, 'list_eval_partition.csv'))
-        self._split_array = split_df['partition'].values
+        if self._split_scheme == 'official':
+            split_df = pd.read_csv(
+                os.path.join(self.data_dir, 'list_eval_partition.csv'))
+            self._split_array = split_df['partition'].values
+        else:
+            random_seed = int(self._split_scheme)
+            random_state = np.random.RandomState(random_seed)
+            self._split_array = np.zeros(len(self._y_array))
+            self._split_array[:162770] = 0 # train
+            self._split_array[162770:(162770+19867)] = 1 # val
+            self._split_array[(162770+19867):] = 2 # test
+            random_state.shuffle(self._split_array)
+        #else:
+        #    raise ValueError(f'Split scheme {self._split_scheme} not recognized')
 
         super().__init__(root_dir, download, split_scheme)
 

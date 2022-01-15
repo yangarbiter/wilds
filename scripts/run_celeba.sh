@@ -17,14 +17,20 @@ mkdir -p ./logs/${DATASET}
 MODEL="resnet50"
 for LR in 1e-3
 do
-  for SIGMA in 0.01 0.1 1.0
+  for SIGMA in 0.001 0.01 0.1 # 1.0
   do
     python examples/run_expt.py \
       --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
       --optimizer SGD --delta 1e-5 --sigma ${SIGMA} --apply_noise \
-      --weight_decay 0. --lr ${LR} \
-      --log_dir ./logs/${DATASET}/iwerm-${MODEL}-lr${LR}-noisesgd_1e-5_${SIGMA} \
+      --weight_decay 0. --lr ${LR} --split_scheme 1 \
+      --log_dir ./logs/${DATASET}/iwerm-${MODEL}-lr${LR}-noisesgd_1e-5_${SIGMA}_sp1 \
       --algorithm IWERM --download
+    #python examples/run_expt.py \
+    #  --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+    #  --optimizer SGD --delta 1e-5 --sigma ${SIGMA} --apply_noise \
+    #  --weight_decay 0. --lr ${LR} \
+    #  --log_dir ./logs/${DATASET}/iwerm-${MODEL}-lr${LR}-noisesgd_1e-5_${SIGMA} \
+    #  --algorithm IWERM --download
   done
 done
 
@@ -69,20 +75,20 @@ done
 #############################
 # ERM + DPSGD
 #############################
-LR="1e-3"
-SAMPLERATE="0.0001"
-for CLIPNORM in 1.0
-do
-  for SIGMA in 0.0001 0.001 0.01 0.1 1.0 10.0
-  do
-    python examples/run_expt.py \
-      --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
-      --optimizer SGD --delta 1e-5 --sigma ${SIGMA} --max_per_sample_grad_norm $CLIPNORM --enable_privacy \
-      --uniform_iid --sample_rate $SAMPLERATE --weight_decay 0. --lr ${LR} \
-      --log_dir ./logs/${DATASET}/erm-${MODEL}-lr${LR}-dpsgd_1e-5_${SIGMA}_${CLIPNORM}_${SAMPLERATE} \
-      --algorithm ERM --download
-  done
-done
+#LR="1e-3"
+#SAMPLERATE="0.0001"
+#for CLIPNORM in 1.0
+#do
+#  for SIGMA in 0.0001 0.001 0.01 0.1 1.0 10.0
+#  do
+#    python examples/run_expt.py \
+#      --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+#      --optimizer SGD --delta 1e-5 --sigma ${SIGMA} --max_per_sample_grad_norm $CLIPNORM --enable_privacy \
+#      --uniform_iid --sample_rate $SAMPLERATE --weight_decay 0. --lr ${LR} \
+#      --log_dir ./logs/${DATASET}/erm-${MODEL}-lr${LR}-dpsgd_1e-5_${SIGMA}_${CLIPNORM}_${SAMPLERATE} \
+#      --algorithm ERM --download
+#  done
+#done
 
 #############################
 # DRO + DPSGD
