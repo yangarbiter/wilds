@@ -50,19 +50,19 @@ done
 #############################
 # IWERM
 #############################
-BATCHSIZE="64"
-MODEL="resnet50"
-#python examples/run_expt.py \
-#  --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
-#  --log_dir ./logs/${DATASET}/iwerm-${MODEL} \
-#  --algorithm IWERM --weight_decay 0. --download
-for wd in 0.001 0.01 #1.0 0.1
-do
-  python examples/run_expt.py \
-    --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
-    --log_dir ./logs/${DATASET}/iwerm-${MODEL}_wd${wd} \
-    --algorithm IWERM --weight_decay ${wd} --download
-done
+#BATCHSIZE="64"
+#MODEL="resnet50"
+##python examples/run_expt.py \
+##  --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+##  --log_dir ./logs/${DATASET}/iwerm-${MODEL} \
+##  --algorithm IWERM --weight_decay 0. --download
+#for wd in 0.001 0.01 #1.0 0.1
+#do
+#  python examples/run_expt.py \
+#    --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+#    --log_dir ./logs/${DATASET}/iwerm-${MODEL}_wd${wd} \
+#    --algorithm IWERM --weight_decay ${wd} --download
+#done
 
 
 #############################
