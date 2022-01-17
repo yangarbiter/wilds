@@ -73,7 +73,7 @@ do
     python examples/run_expt.py \
       --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
       --optimizer SGD --delta 1e-5 --sigma ${SIGMA} --apply_noise \
-       --weight_decay 0. --lr${LR} --split_scheme ${SP} \
+       --weight_decay 0. --lr ${LR} --split_scheme ${SP} \
       --log_dir ./logs/${DATASET}/erm_reweight-${MODEL}-lr${LR}-noisesgd_${SIGMA}_sp${SP} \
       --algorithm ERM --uniform_over_groups --download
   done
