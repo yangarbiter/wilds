@@ -14,32 +14,32 @@ mkdir -p ./logs/${DATASET}
 #############################
 # IWERM + NoiseSGD
 #############################
-MODEL="resnet50"
-BATCHSIZE="64"
-for LR in 1e-3
-do
-  for SIGMA in 0.001 0.01 0.1 # 1.0
-  do
-    python examples/run_expt.py \
-      --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
-      --optimizer SGD --delta 1e-5 --sigma ${SIGMA} --apply_noise \
-      --weight_decay 0. --lr ${LR} --split_scheme 2 \
-      --log_dir ./logs/${DATASET}/iwerm-${MODEL}-lr${LR}-noisesgd_1e-5_${SIGMA}_sp2 \
-      --algorithm IWERM --download
-    #python examples/run_expt.py \
-    #  --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
-    #  --optimizer SGD --delta 1e-5 --sigma ${SIGMA} --apply_noise \
-    #  --weight_decay 0. --lr ${LR} --split_scheme 1 \
-    #  --log_dir ./logs/${DATASET}/iwerm-${MODEL}-lr${LR}-noisesgd_1e-5_${SIGMA}_sp1 \
-    #  --algorithm IWERM --download
-    #python examples/run_expt.py \
-    #  --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
-    #  --optimizer SGD --delta 1e-5 --sigma ${SIGMA} --apply_noise \
-    #  --weight_decay 0. --lr ${LR} \
-    #  --log_dir ./logs/${DATASET}/iwerm-${MODEL}-lr${LR}-noisesgd_1e-5_${SIGMA} \
-    #  --algorithm IWERM --download
-  done
-done
+#MODEL="resnet50"
+#BATCHSIZE="64"
+#for LR in 1e-3
+#do
+#  for SIGMA in 0.001 0.01 0.1 # 1.0
+#  do
+#    #python examples/run_expt.py \
+#    #  --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+#    #  --optimizer SGD --delta 1e-5 --sigma ${SIGMA} --apply_noise \
+#    #  --weight_decay 0. --lr ${LR} --split_scheme 2 \
+#    #  --log_dir ./logs/${DATASET}/iwerm-${MODEL}-lr${LR}-noisesgd_1e-5_${SIGMA}_sp2 \
+#    #  --algorithm IWERM --download
+#    python examples/run_expt.py \
+#      --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+#      --optimizer SGD --delta 1e-5 --sigma ${SIGMA} --apply_noise \
+#      --weight_decay 0. --lr ${LR} --split_scheme 1 \
+#      --log_dir ./logs/${DATASET}/iwerm-${MODEL}-lr${LR}-noisesgd_1e-5_${SIGMA}_sp1 \
+#      --algorithm IWERM --download
+#    #python examples/run_expt.py \
+#    #  --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+#    #  --optimizer SGD --delta 1e-5 --sigma ${SIGMA} --apply_noise \
+#    #  --weight_decay 0. --lr ${LR} \
+#    #  --log_dir ./logs/${DATASET}/iwerm-${MODEL}-lr${LR}-noisesgd_1e-5_${SIGMA} \
+#    #  --algorithm IWERM --download
+#  done
+#done
 
 #############################
 # ERM
@@ -67,10 +67,11 @@ done
 # ISERM + noise
 #############################
 #MODEL="resnet50"
+#BATCHSIZE="64"
 #LR="1e-3"
 #for SP in 1 2
 #do
-#  for SIGMA in 0.001 0.01 # 0.1 1.0
+#  for SIGMA in 0.1 # 0.001 0.01 # 1.0
 #  do
 #    python examples/run_expt.py \
 #      --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
@@ -84,6 +85,9 @@ done
 #############################
 # ISERM
 #############################
+#MODEL="resnet50"
+#BATCHSIZE="64"
+#LR="1e-3"
 #for SP in 1 2
 #do
 #  for wd in 0.001 0.01 1.0 0.1
@@ -91,13 +95,13 @@ done
 #    python examples/run_expt.py \
 #      --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
 #      --split_scheme $SP \
-#      --log_dir ./logs/${DATASET}/erm_reweight-${MODEL}_wd${wd}_sp${SP} \
+#      --log_dir ./logs/${DATASET}/erm_reweight-${MODEL}-lr${LR}_wd${wd}_sp${SP} \
 #      --algorithm ERM --uniform_over_groups --weight_decay ${wd} --download
 #  done
 #  python examples/run_expt.py \
 #    --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
 #    --split_scheme $SP \
-#    --log_dir ./logs/${DATASET}/erm_reweight-${MODEL}_sp${SP} \
+#    --log_dir ./logs/${DATASET}/erm_reweight-${MODEL}-lr${LR}_sp${SP} \
 #    --algorithm ERM --uniform_over_groups --weight_decay 0. --download
 #done
 
