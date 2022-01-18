@@ -26,6 +26,22 @@ PYTHONPATH=. python examples/run_expt.py \
   --log_dir ./logs/${DATASET}/weightederm-${MODEL}-lr1e-5_dpAdamW_1e-5_${SIGMA}_${CLIPNORM}_${SAMPLERATE} \
   --algorithm ERM
 
+#############################
+# ISERM + noise
+#############################
+MODEL="dpall_bert-base-uncased"
+BATCHSIZE="16"
+LR="1e-5"
+for SIGMA in 0.001 0.01 # 0.1 1.0
+do
+  python examples/run_expt.py \
+    --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+    --optimizer SGD --delta 1e-5 --sigma ${SIGMA} --apply_noise \
+    --weight_decay 0. --lr ${LR} --uniform_over_groups \
+    --log_dir ./logs/${DATASET}/erm_reweight-${MODEL}-lr${LR}-noisesgd_${SIGMA} \
+    --algorithm ERM --download
+done
+
 # ERM + DPSGD
 #python examples/run_expt.py \
 #  --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
