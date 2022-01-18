@@ -12,7 +12,7 @@ CLIPNORM="0.1"
 mkdir -p ./logs/${DATASET}
 
 #############################
-# IWERM + NoiseSGD
+# gDRO + NoiseSGD
 #############################
 MODEL="resnet50"
 for LR in 1e-3
@@ -22,7 +22,7 @@ do
     python examples/run_expt.py \
       --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
       --optimizer SGD --sigma ${SIGMA} --apply_noise \
-      --weight_decay 0. --lr ${LR} --split_scheme ${SP} \
+      --weight_decay 0. --lr ${LR} \
       --log_dir ./logs/${DATASET}/groupDRO-${MODEL}-lr${LR}-noisesgd_${SIGMA} \
       --algorithm groupDRO --download
     for SP in 1 # 2
