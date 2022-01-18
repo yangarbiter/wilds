@@ -198,6 +198,29 @@ mkdir -p ./logs/${DATASET}
 #    --algorithm groupDRO --download
 #done
 
+#############################
+# gDRO
+#############################
+MODEL="resnet50"
+LR="1e-3"
+BATCHSIZE="64"
+for WD in 0.001 0.01 0.1 #1.0
+do
+  #python examples/run_expt.py \
+  #  --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+  #  --optimizer SGD --weight_decay ${WD} --lr ${LR} \
+  #  --log_dir ./logs/${DATASET}/groupDRO-${MODEL}-lr${LR}-wd${WD} \
+  #  --algorithm groupDRO --download
+  for SP in 1 # 2
+  do
+    python examples/run_expt.py \
+      --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+      --optimizer SGD --weight_decay ${WD} --lr ${LR} \
+      --log_dir ./logs/${DATASET}/groupDRO-${MODEL}-lr${LR}-wd${WD}_sp${SP} \
+      --algorithm groupDRO --download
+  done
+done
+
 # IWERM + DPSGD
 #python examples/run_expt.py \
 #  --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
