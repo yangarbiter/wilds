@@ -31,7 +31,7 @@ do
         --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
         --optimizer SGD --sigma ${SIGMA} --apply_noise \
         --weight_decay 0. --lr ${LR} \
-        --log_dir ./logs/${DATASET}/groupDRO-${MODEL}-lr${LR}-noisesgd_${SIGMA}_SP${SP} \
+        --log_dir ./logs/${DATASET}/groupDRO-${MODEL}-lr${LR}-noisesgd_${SIGMA}_sp${SP} \
         --algorithm groupDRO --download
     done
   done
