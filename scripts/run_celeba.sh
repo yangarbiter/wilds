@@ -204,11 +204,11 @@ mkdir -p ./logs/${DATASET}
 MODEL="resnet50"
 LR="1e-3"
 BATCHSIZE="64"
-python examples/run_expt.py \
-  --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
-  --optimizer SGD --weight_decay 0. --lr ${LR} \
-  --log_dir ./logs/${DATASET}/groupDRO-${MODEL}-lr${LR} \
-  --algorithm groupDRO --download
+#python examples/run_expt.py \
+#  --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
+#  --optimizer SGD --weight_decay 0. --lr ${LR} \
+#  --log_dir ./logs/${DATASET}/groupDRO-${MODEL}-lr${LR} \
+#  --algorithm groupDRO --download
 #for WD in 0.001 0.01 0.1 #1.0
 #do
 #  #python examples/run_expt.py \
@@ -217,7 +217,7 @@ python examples/run_expt.py \
 #  #  --log_dir ./logs/${DATASET}/groupDRO-${MODEL}-lr${LR}-wd${WD} \
 #  #  --algorithm groupDRO --download
 #done
-for SP in 1 # 2
+for SP in 2 # 1
 do
   python examples/run_expt.py \
     --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
@@ -225,7 +225,7 @@ do
     --optimizer SGD --weight_decay 0. --lr ${LR} \
     --log_dir ./logs/${DATASET}/groupDRO-${MODEL}-lr${LR}_sp${SP} \
     --algorithm groupDRO --download
-  for WD in 0.001 0.01 0.1 1.0
+  for WD in 0.001 0.01 # 0.1 1.0 #0.001 #0.01 0.1 # 1.0
   do
     python examples/run_expt.py \
       --dataset $DATASET --model $MODEL --n_epochs $EPOCHS --batch_size $BATCHSIZE --root_dir $ROOTDIR \
