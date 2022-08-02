@@ -146,19 +146,17 @@ class FairDPOptimizer(DPOptimizer):
 
             _mark_as_processed(p.grad_sample)
 
-        self.C = torch.max(Ck)
-        return True
+        return torch.max(Ck).cpu().item()
 
-    def add_noise(self):
+    def add_noise(self, clip_val):
         """
         Adds noise to clipped gradeints. Stores clipped and noised result in ``p.grad``
         """
-
         for p in self.params:
             _check_processed_flag(p.summed_grad)
 
             noise = _generate_noise(
-                std=self.noise_multiplier * self.C,
+                std=self.noise_multiplier * clip_val,
                 reference=p.summed_grad,
                 generator=self.generator,
                 secure_mode=self.secure_mode,
@@ -178,13 +176,13 @@ class FairDPOptimizer(DPOptimizer):
             closure: A closure that reevaluates the model and
                 returns the loss. Optional for most optimizers.
         """
-        self.compute_clipping()
+        clip_val = max(self.compute_clipping(), 0.)
         #self.clip_and_accumulate()
         if self._check_skip_next_step():
             self._is_last_step_skipped = True
             return False
 
-        self.add_noise()
+        self.add_noise(clip_val)
         self.scale_grad()
 
         if self.step_hook:

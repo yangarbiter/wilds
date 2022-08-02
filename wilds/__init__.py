@@ -2,6 +2,7 @@ from .version import __version__
 from .get_dataset import get_dataset
 
 benchmark_datasets = [
+    'adult',
     'multinli',
     'utkface',
     'inatsub',
